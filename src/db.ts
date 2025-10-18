@@ -47,3 +47,16 @@ export const getAllEpisodeTitles = (db: Database): string[] => {
 	
 	return rows.map(row => row.title);
 };
+
+export const getEpisodeMetric = (
+	db: Database,
+	episodeTitle: string,
+	metricType: 'viewers' | 'rating'
+): number | undefined => {
+	//
+	const column = metricType === 'viewers' ? 'us_viewers_millions' : 'imdb_rating';
+	const query = db.query(`SELECT ${column} FROM episodes WHERE title = ?`);
+	const row = query.get(episodeTitle) as { [key: string]: number } | null;
+	
+	return row ? row[column] : undefined;
+};

@@ -18,7 +18,7 @@ export const identifyEpisodeTitle = (query: string, episodeTitles: string[]): st
 		}
 	}
 
-	console.debug(`Could not identify episode title in query: "${query}". Please include a valid episode title.`);
+	// console.debug(`Could not identify episode title in query: "${query}". Please include a valid episode title.`);
 
 	return undefined;
 };
@@ -39,7 +39,7 @@ export const identifyMetricType = (query: string): MetricType | undefined => {
 		}
 	}
 
-	console.debug(`Could not identify metric type in query: "${query}". Please specify either viewer count or rating.`);
+	// console.debug(`Could not identify metric type in query: "${query}". Please specify either viewer count or rating.`);
 
 	return undefined;
 };

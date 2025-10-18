@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 
 import { z } from 'zod';
-import { getAllEpisodeTitles, getDb, seedDatabase } from './db';
+import { getAllEpisodeTitles, getDb, getEpisodeMetric, seedDatabase } from './db';
 import { identifyEpisodeTitle, identifyMetricType } from './query-parser';
 
 const commandSchema = z.enum(['ingest', 'ask'], {
@@ -58,10 +58,23 @@ const ask = (question?: string) => {
 	const episodeTitle = identifyEpisodeTitle(question, episodeTitles);
 	const metricType = identifyMetricType(question);
 
-	console.log('Episode:', episodeTitle);
-	console.log('Metric:', metricType);
-	
-	// TODO: query database for the specific metric
+	if (!episodeTitle || !metricType) {
+		console.error('Sorry, I couldn\'t understand your question. Make sure to include a valid episode title.');
+		process.exit(1);
+	}
+
+	const value = getEpisodeMetric(db, episodeTitle, metricType);
+
+	if (!value) {
+		console.error(`No data found for episode "${episodeTitle}"`);
+		process.exit(1);
+	}
+
+	if (metricType === 'viewers') {
+		console.log(`${episodeTitle} had ${value} million US viewers.`);
+	} else {
+		console.log(`${episodeTitle} has an IMDb rating of ${value}.`);
+	}
 }
 
 const main = () => {
