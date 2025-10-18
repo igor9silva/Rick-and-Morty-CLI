@@ -1,8 +1,10 @@
 #!/usr/bin/env bun
 
 import { z } from 'zod';
+import { searchContent } from './content-search';
 import { getEpisodeMetric, seedDatabase } from './db';
 import { identifyEpisodeTitle, identifyMetricType } from './query-parser';
+import { buildSearchIndex } from './search-index';
 
 const commandSchema = z.enum(['ingest', 'ask'], {
 	message: "Invalid command. Available commands: ingest, ask"
@@ -38,10 +40,12 @@ const parseArgs = (args: string[]) => {
 const ingest = () => {
 	//
 	console.info('seeding database...');
-
 	seedDatabase();
-
 	console.info('database seeded successfully');
+
+	console.info('building search index...');
+	buildSearchIndex();
+	console.info('search index built successfully');
 }
 
 const ask = (question?: string) => {
@@ -54,22 +58,30 @@ const ask = (question?: string) => {
 	const episodeTitle = identifyEpisodeTitle(question);
 	const metricType = identifyMetricType(question);
 
-	if (!episodeTitle || !metricType) {
-		console.error('Sorry, I couldn\'t understand your question. Make sure to include a valid episode title.');
-		process.exit(1);
+	if (episodeTitle && metricType) {
+		//
+		const value = getEpisodeMetric(episodeTitle, metricType);
+
+		if (!value) {
+			console.error(`No data found for episode "${episodeTitle}"`);
+			process.exit(1);
+		}
+
+		if (metricType === 'viewers') {
+			console.log(`${episodeTitle} had ${value} million US viewers.`);
+		} else {
+			console.log(`${episodeTitle} has an IMDb rating of ${value}.`);
+		}
+
+		return;
 	}
 
-	const value = getEpisodeMetric(episodeTitle, metricType);
+	const result = searchContent(question);
 
-	if (!value) {
-		console.error(`No data found for episode "${episodeTitle}"`);
-		process.exit(1);
-	}
-
-	if (metricType === 'viewers') {
-		console.log(`${episodeTitle} had ${value} million US viewers.`);
+	if (result) {
+		console.log(result.text);
 	} else {
-		console.log(`${episodeTitle} has an IMDb rating of ${value}.`);
+		console.error('Sorry, I couldn\'t understand your question.');
 	}
 }
 

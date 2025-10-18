@@ -21,3 +21,6 @@ export const RATING_SYNONYMS = [
 	'rated',
 	'rate',
 ] as const;
+
+export const SEARCH_TOP_K = 1;
+export const SEARCH_CONFIDENCE_THRESHOLD = 0.25;
