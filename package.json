@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "ingest": "bun ./src/cli.ts ingest",
     "ask": "bun ./src/cli.ts ask",
     "test": "bun test",
     "lint": "biome lint .",

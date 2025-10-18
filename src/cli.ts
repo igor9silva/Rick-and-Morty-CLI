@@ -1,9 +1,10 @@
 #!/usr/bin/env bun
 
 import { z } from 'zod';
+import { getDb, seedDatabase } from './db';
 
-const commandSchema = z.enum(['ask'], {
-	message: "Invalid command. Available commands: ask"
+const commandSchema = z.enum(['ingest', 'ask'], {
+	message: "Invalid command. Available commands: ingest, ask"
 });
 
 const questionSchema = z.string().min(1, {
@@ -14,7 +15,7 @@ const argsSchema = z.tuple([
 	z.string(), // node
 	z.string(), // script path
 	commandSchema,
-	questionSchema,
+	questionSchema.optional(),
 ], {
 	message: "Usage: <script> <command> <question>"
 });
@@ -33,11 +34,34 @@ const parseArgs = (args: string[]) => {
 	return { command, question };
 }
 
+const ingest = () => {
+	//
+	console.log('seeding database...');
+
+	const db = getDb();
+	seedDatabase(db);
+
+	console.log('database seeded successfully');
+}
+
+const ask = (question?: string) => {
+	//
+	if (!question) {
+		console.error('Question is required');
+		process.exit(1);
+	}
+
+	console.log('ask', question);
+}
+
 const main = () => {
 	//
 	const { command, question } = parseArgs(process.argv);
 
-	console.log(command, question);
+	switch (command) {
+		case 'ingest': ingest(); break;
+		case 'ask': ask(question); break;
+	}
 };
 
 main();
