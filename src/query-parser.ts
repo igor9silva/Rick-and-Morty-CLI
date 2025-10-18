@@ -1,12 +1,14 @@
 import { RATING_SYNONYMS, VIEWER_SYNONYMS, type MetricType } from './config';
+import { getAllEpisodeTitles } from './db';
 
 // remove special characters and convert to lowercase
 export const normalizeString = (str: string): string => {
 	return str.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '');
 };
 
-export const identifyEpisodeTitle = (query: string, episodeTitles: string[]): string | undefined => {
+export const identifyEpisodeTitle = (query: string): string | undefined => {
 	//
+	const episodeTitles = getAllEpisodeTitles();
 	const normalizedQuery = normalizeString(query);
 
 	for (const title of episodeTitles) {

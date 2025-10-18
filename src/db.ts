@@ -21,8 +21,9 @@ export const ensureDir = (path: string): void => {
 	mkdirSync(path, { recursive: true });
 };
 
-export const seedDatabase = (db: Database): void => {
+export const seedDatabase = () => {
 	//
+	const db = getDb();
 	const seed = readFileSync(SQL_SEED_PATH, "utf-8");
 
 	db.run(seed);
@@ -40,8 +41,9 @@ export const getDb = (): Database => {
 
 // ===========================================================================
 
-export const getAllEpisodeTitles = (db: Database): string[] => {
+export const getAllEpisodeTitles = (): string[] => {
 	//
+	const db = getDb();
 	const query = db.query('SELECT title FROM episodes');
 	const rows = query.all() as { title: string }[];
 	
@@ -49,11 +51,11 @@ export const getAllEpisodeTitles = (db: Database): string[] => {
 };
 
 export const getEpisodeMetric = (
-	db: Database,
 	episodeTitle: string,
 	metricType: 'viewers' | 'rating'
 ): number | undefined => {
 	//
+	const db = getDb();
 	const column = metricType === 'viewers' ? 'us_viewers_millions' : 'imdb_rating';
 	const query = db.query(`SELECT ${column} FROM episodes WHERE title = ?`);
 	const row = query.get(episodeTitle) as { [key: string]: number } | null;
