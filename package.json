@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "ask": "bun ./src/cli.ts ask",
     "test": "bun test",
     "lint": "biome lint .",
     "format": "biome format --write .",
@@ -13,5 +14,8 @@
     "@biomejs/biome": "^2.2.6",
     "@types/bun": "latest",
     "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
   }
 }
