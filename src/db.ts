@@ -52,12 +52,13 @@ export const getAllEpisodeTitles = (): string[] => {
 export const getEpisodeMetric = (
 	episodeTitle: string, //
 	metricType: 'viewers' | 'rating',
-): number | undefined => {
+): { value: number; query: string } | undefined => {
 	//
 	const db = getDb();
 	const column = metricType === 'viewers' ? 'us_viewers_millions' : 'imdb_rating';
-	const query = db.query(`SELECT ${column} FROM episodes WHERE title = ?`);
+	const sqlQuery = `SELECT ${column} FROM episodes WHERE title = ?`;
+	const query = db.query(sqlQuery);
 	const row = query.get(episodeTitle) as { [key: string]: number } | null;
 
-	return row ? row[column] : undefined;
+	return row ? { value: row[column], query: sqlQuery.replace('?', `'${episodeTitle}'`) } : undefined;
 };

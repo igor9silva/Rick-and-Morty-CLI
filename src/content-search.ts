@@ -5,6 +5,7 @@ import { calculateTFIDF, cosineSimilarity, tokenize } from './tfidf';
 export interface SearchResult {
 	episodeTitle: string;
 	text: string;
+	filePath: string;
 	similarity: number;
 }
 
@@ -32,6 +33,7 @@ export const searchContent = (query: string): SearchResult | undefined => {
 		results.push({
 			episodeTitle: chunk.episodeTitle,
 			text: chunk.text,
+			filePath: chunk.filePath,
 			similarity,
 		});
 	}

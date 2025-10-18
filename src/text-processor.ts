@@ -7,6 +7,7 @@ export const CORPUS_DIR = join(DATA_DIR, 'corpus');
 export interface Chunk {
 	episodeTitle: string;
 	text: string;
+	filePath: string;
 }
 
 export const parseAllEpisodes = (): Chunk[] => {
@@ -69,12 +70,12 @@ export const parseEpisodeFile = (filePath: string): Chunk[] => {
 		const sentences = splitIntoSentencesByPunctuation(synopsis);
 
 		for (const sentence of sentences) {
-			chunks.push({ episodeTitle, text: sentence });
+			chunks.push({ episodeTitle, text: sentence, filePath });
 		}
 	}
 
 	for (const bullet of bulletPoints) {
-		chunks.push({ episodeTitle, text: bullet });
+		chunks.push({ episodeTitle, text: bullet, filePath });
 	}
 
 	return chunks;

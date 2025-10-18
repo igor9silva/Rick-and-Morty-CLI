@@ -97,24 +97,29 @@ Rick does something crazy. Morty follows along reluctantly.
 		expect(chunks[0]).toEqual({
 			episodeTitle: 'Test Episode',
 			text: 'Rick does something crazy',
+			filePath: testFile,
 		});
 		expect(chunks[1]).toEqual({
 			episodeTitle: 'Test Episode',
 			text: 'Morty follows along reluctantly.',
+			filePath: testFile,
 		});
 
 		// Check bullet points
 		expect(chunks[2]).toEqual({
 			episodeTitle: 'Test Episode',
 			text: 'Rick builds a device.',
+			filePath: testFile,
 		});
 		expect(chunks[3]).toEqual({
 			episodeTitle: 'Test Episode',
 			text: 'Morty questions the ethics.',
+			filePath: testFile,
 		});
 		expect(chunks[4]).toEqual({
 			episodeTitle: 'Test Episode',
 			text: 'Beth drinks wine.',
+			filePath: testFile,
 		});
 
 		// Cleanup
@@ -136,6 +141,7 @@ Just a synopsis here.`;
 		expect(chunks[0]).toEqual({
 			episodeTitle: 'Simple Episode',
 			text: 'Just a synopsis here.',
+			filePath: testFile,
 		});
 
 		rmSync(testDir, { recursive: true });
@@ -221,6 +227,8 @@ describe('Parse All Episodes', () => {
 			expect(chunk.episodeTitle.length).toBeGreaterThan(0);
 			expect(chunk.text).toBeTruthy();
 			expect(chunk.text.length).toBeGreaterThan(0);
+			expect(chunk.filePath).toBeTruthy();
+			expect(chunk.filePath.length).toBeGreaterThan(0);
 		}
 	});
 });

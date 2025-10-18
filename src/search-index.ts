@@ -10,6 +10,7 @@ export interface IndexedChunk {
 	id: number;
 	episodeTitle: string;
 	text: string;
+	filePath: string;
 	tokens: string[];
 	tfidf: Record<string, number>; // term -> TF-IDF score
 }
@@ -45,6 +46,7 @@ export const buildSearchIndex = () => {
 			id: index,
 			episodeTitle: chunk.episodeTitle,
 			text: chunk.text,
+			filePath: chunk.filePath,
 			tokens,
 			tfidf: tfidfObj,
 		};

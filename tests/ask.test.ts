@@ -1,9 +1,11 @@
 import { beforeAll, describe, expect, test } from 'bun:test';
 import { getAllEpisodeTitles, getEpisodeMetric, seedDatabase } from '../src/db';
 import { identifyEpisodeTitle, identifyMetricType } from '../src/query-parser';
+import { buildSearchIndex } from '../src/search-index';
 
 beforeAll(() => {
 	seedDatabase();
+	buildSearchIndex();
 });
 
 describe('Database queries', () => {
@@ -20,16 +22,18 @@ describe('Database queries', () => {
 
 	test('getEpisodeMetric returns correct viewer count', () => {
 		//
-		const viewers = getEpisodeMetric('Pickle Rick', 'viewers');
+		const result = getEpisodeMetric('Pickle Rick', 'viewers');
 
-		expect(viewers).toBe(2.31);
+		expect(result?.value).toBe(2.31);
+		expect(result?.query).toBe("SELECT us_viewers_millions FROM episodes WHERE title = 'Pickle Rick'");
 	});
 
 	test('getEpisodeMetric returns correct rating', () => {
 		//
-		const rating = getEpisodeMetric('The Ricklantis Mixup', 'rating');
+		const result = getEpisodeMetric('The Ricklantis Mixup', 'rating');
 
-		expect(rating).toBe(9.8);
+		expect(result?.value).toBe(9.8);
+		expect(result?.query).toBe("SELECT imdb_rating FROM episodes WHERE title = 'The Ricklantis Mixup'");
 	});
 
 	test('getEpisodeMetric returns undefined for non-existent episode', () => {
