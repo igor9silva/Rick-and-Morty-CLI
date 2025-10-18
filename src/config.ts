@@ -1,7 +1,7 @@
 export type MetricType = 'viewers' | 'rating';
 
 export const VIEWER_SYNONYMS = [
-	'view',
+	'view', //
 	'views',
 	'viewer',
 	'viewers',
@@ -13,7 +13,7 @@ export const VIEWER_SYNONYMS = [
 ] as const;
 
 export const RATING_SYNONYMS = [
-	'rating',
+	'rating', //
 	'ratings',
 	'imdb',
 	'score',

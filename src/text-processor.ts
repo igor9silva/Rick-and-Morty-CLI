@@ -1,8 +1,8 @@
-import { readFileSync, readdirSync } from "node:fs";
-import { join } from "node:path";
-import { DATA_DIR } from "./db";
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { DATA_DIR } from './db';
 
-export const CORPUS_DIR = join(DATA_DIR, "corpus");
+export const CORPUS_DIR = join(DATA_DIR, 'corpus');
 
 export interface Chunk {
 	episodeTitle: string;
@@ -11,7 +11,7 @@ export interface Chunk {
 
 export const parseAllEpisodes = (): Chunk[] => {
 	//
-	const files = readdirSync(CORPUS_DIR).filter((f) => f.endsWith(".md"));
+	const files = readdirSync(CORPUS_DIR).filter((f) => f.endsWith('.md'));
 
 	const allChunks: Chunk[] = [];
 
@@ -34,30 +34,29 @@ export const parseAllEpisodes = (): Chunk[] => {
  */
 export const parseEpisodeFile = (filePath: string): Chunk[] => {
 	//
-	const content = readFileSync(filePath, "utf-8");
-	const lines = content.split("\n").filter((line) => line.trim());
+	const content = readFileSync(filePath, 'utf-8');
+	const lines = content.split('\n').filter((line) => line.trim());
 
 	if (lines.length === 0) return [];
 
 	// extract episode title (first line)
-	const episodeTitle = lines[0].replace(/^#\s*/, "").trim();
+	const episodeTitle = lines[0].replace(/^#\s*/, '').trim();
 
 	const chunks: Chunk[] = [];
 
 	// extract synopsis and bullet points
-	let synopsisLines: string[] = [];
-	let bulletPoints: string[] = [];
+	const synopsisLines: string[] = [];
+	const bulletPoints: string[] = [];
 	let inBullets = false;
 
 	for (let i = 1; i < lines.length; i++) {
 		//
 		const line = lines[i];
 
-		if (line.startsWith("-")) {
+		if (line.startsWith('-')) {
 			//
 			inBullets = true;
-			bulletPoints.push(line.replace(/^-\s*/, "").trim()); // remove leading dash and space
-
+			bulletPoints.push(line.replace(/^-\s*/, '').trim()); // remove leading dash and space
 		} else if (!inBullets) {
 			synopsisLines.push(line);
 		}
@@ -66,7 +65,7 @@ export const parseEpisodeFile = (filePath: string): Chunk[] => {
 	// split synopsis into sentences
 	if (synopsisLines.length > 0) {
 		//
-		const synopsis = synopsisLines.join(" ").trim();
+		const synopsis = synopsisLines.join(' ').trim();
 		const sentences = splitIntoSentencesByPunctuation(synopsis);
 
 		for (const sentence of sentences) {
@@ -85,6 +84,6 @@ export const splitIntoSentencesByPunctuation = (text: string): string[] => {
 	//
 	return text
 		.split(/[.!?]\s+/) // . ! ? followed by a space
-		.map(s => s.trim())
-		.filter(s => s.length > 0);
+		.map((s) => s.trim())
+		.filter((s) => s.length > 0);
 };

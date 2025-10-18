@@ -1,9 +1,12 @@
-import { RATING_SYNONYMS, VIEWER_SYNONYMS, type MetricType } from './config';
+import { type MetricType, RATING_SYNONYMS, VIEWER_SYNONYMS } from './config';
 import { getAllEpisodeTitles } from './db';
 
 // remove special characters and convert to lowercase
 export const normalizeString = (str: string): string => {
-	return str.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '');
+	return str
+		.toLowerCase()
+		.trim()
+		.replace(/[^a-z0-9\s]/g, '');
 };
 
 export const identifyEpisodeTitle = (query: string): string | undefined => {
@@ -14,7 +17,7 @@ export const identifyEpisodeTitle = (query: string): string | undefined => {
 	for (const title of episodeTitles) {
 		//
 		const normalizedTitle = normalizeString(title);
-		
+
 		if (normalizedQuery.includes(normalizedTitle)) {
 			return title;
 		}
@@ -45,4 +48,3 @@ export const identifyMetricType = (query: string): MetricType | undefined => {
 
 	return undefined;
 };
-

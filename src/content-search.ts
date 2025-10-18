@@ -1,6 +1,6 @@
-import { SEARCH_CONFIDENCE_THRESHOLD } from "./config";
-import { loadSearchIndex } from "./search-index";
-import { calculateTFIDF, cosineSimilarity, tokenize } from "./tfidf";
+import { SEARCH_CONFIDENCE_THRESHOLD } from './config';
+import { loadSearchIndex } from './search-index';
+import { calculateTFIDF, cosineSimilarity, tokenize } from './tfidf';
 
 export interface SearchResult {
 	episodeTitle: string;
@@ -37,7 +37,7 @@ export const searchContent = (query: string): SearchResult | undefined => {
 	}
 
 	results.sort((a, b) => b.similarity - a.similarity);
- 
+
 	// check if meets confidence threshold
 	const bestResult = results[0];
 	if (bestResult && bestResult.similarity >= SEARCH_CONFIDENCE_THRESHOLD) {
@@ -46,4 +46,3 @@ export const searchContent = (query: string): SearchResult | undefined => {
 
 	return undefined;
 };
-

@@ -1,14 +1,10 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
-import { STORE_DIR } from "./db";
-import { parseAllEpisodes } from "./text-processor";
-import {
-	calculateInverseDocumentFrequency,
-	calculateTFIDF,
-	tokenize,
-} from "./tfidf";
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { STORE_DIR } from './db';
+import { parseAllEpisodes } from './text-processor';
+import { calculateInverseDocumentFrequency, calculateTFIDF, tokenize } from './tfidf';
 
-export const SEARCH_INDEX_PATH = join(STORE_DIR, "search-index.json");
+export const SEARCH_INDEX_PATH = join(STORE_DIR, 'search-index.json');
 
 export interface IndexedChunk {
 	id: number;
@@ -36,25 +32,23 @@ export const buildSearchIndex = () => {
 	const idf = calculateInverseDocumentFrequency(allTokens);
 
 	// build index with pre-calculated TF-IDF
-	const indexedChunks: IndexedChunk[] = tokenizedChunks.map(
-		({ chunk, tokens }, index) => {
-			//
-			const tfidfMap = calculateTFIDF(tokens, idf);
+	const indexedChunks: IndexedChunk[] = tokenizedChunks.map(({ chunk, tokens }, index) => {
+		//
+		const tfidfMap = calculateTFIDF(tokens, idf);
 
-			const tfidfObj: Record<string, number> = {};
-			for (const [term, score] of tfidfMap) {
-				tfidfObj[term] = score;
-			}
-
-			return {
-				id: index,
-				episodeTitle: chunk.episodeTitle,
-				text: chunk.text,
-				tokens,
-				tfidf: tfidfObj,
-			};
+		const tfidfObj: Record<string, number> = {};
+		for (const [term, score] of tfidfMap) {
+			tfidfObj[term] = score;
 		}
-	);
+
+		return {
+			id: index,
+			episodeTitle: chunk.episodeTitle,
+			text: chunk.text,
+			tokens,
+			tfidf: tfidfObj,
+		};
+	});
 
 	// convert map to plain object for JSON serialization
 	const idfObj: Record<string, number> = {};
@@ -66,8 +60,8 @@ export const buildSearchIndex = () => {
 		chunks: indexedChunks,
 		idf: idfObj,
 	});
-	
-	writeFileSync(SEARCH_INDEX_PATH, json, "utf-8");
+
+	writeFileSync(SEARCH_INDEX_PATH, json, 'utf-8');
 };
 
 export const loadSearchIndex = (): SearchIndex | undefined => {
@@ -76,8 +70,7 @@ export const loadSearchIndex = (): SearchIndex | undefined => {
 		return undefined;
 	}
 
-	const json = readFileSync(SEARCH_INDEX_PATH, "utf-8");
+	const json = readFileSync(SEARCH_INDEX_PATH, 'utf-8');
 
 	return JSON.parse(json) as SearchIndex;
 };
-

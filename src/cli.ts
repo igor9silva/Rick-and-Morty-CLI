@@ -7,24 +7,23 @@ import { identifyEpisodeTitle, identifyMetricType } from './query-parser';
 import { buildSearchIndex } from './search-index';
 
 const commandSchema = z.enum(['ingest', 'ask'], {
-	message: "Invalid command. Available commands: ingest, ask"
+	message: 'Invalid command. Available commands: ingest, ask',
 });
 
 const questionSchema = z.string().min(1, {
-	message: "Question is required and cannot be empty"
+	message: 'Question is required and cannot be empty',
 });
 
 const argsSchema = z.tuple([
-	z.string(), // node
-	z.string(), // script path
-	commandSchema,
-	questionSchema.optional(),
+		z.string(), // node
+		z.string(), // script path
+		commandSchema,
+		questionSchema.optional(),
 ], {
 	message: "Usage: <script> <command> <question>"
 });
 
 const parseArgs = (args: string[]) => {
-
 	const parsedArgs = argsSchema.safeParse(args);
 
 	if (!parsedArgs.success) {
@@ -35,7 +34,7 @@ const parseArgs = (args: string[]) => {
 	const [, , command, question] = parsedArgs.data;
 
 	return { command, question };
-}
+};
 
 const ingest = () => {
 	//
@@ -46,7 +45,7 @@ const ingest = () => {
 	console.info('building search index...');
 	buildSearchIndex();
 	console.info('search index built successfully');
-}
+};
 
 const ask = (question?: string) => {
 	//
@@ -81,9 +80,9 @@ const ask = (question?: string) => {
 	if (result) {
 		console.log(result.text);
 	} else {
-		console.error('Sorry, I couldn\'t understand your question.');
+		console.error("Sorry, I couldn't understand your question.");
 	}
-}
+};
 
 const main = () => {
 	//
