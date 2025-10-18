@@ -37,3 +37,13 @@ export const getDb = (): Database => {
 
 	return dbInstance;
 };
+
+// ===========================================================================
+
+export const getAllEpisodeTitles = (db: Database): string[] => {
+	//
+	const query = db.query('SELECT title FROM episodes');
+	const rows = query.all() as { title: string }[];
+	
+	return rows.map(row => row.title);
+};

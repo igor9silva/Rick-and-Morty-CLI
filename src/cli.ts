@@ -1,7 +1,8 @@
 #!/usr/bin/env bun
 
 import { z } from 'zod';
-import { getDb, seedDatabase } from './db';
+import { getAllEpisodeTitles, getDb, seedDatabase } from './db';
+import { identifyEpisodeTitle, identifyMetricType } from './query-parser';
 
 const commandSchema = z.enum(['ingest', 'ask'], {
 	message: "Invalid command. Available commands: ingest, ask"
@@ -36,12 +37,12 @@ const parseArgs = (args: string[]) => {
 
 const ingest = () => {
 	//
-	console.log('seeding database...');
+	console.info('seeding database...');
 
 	const db = getDb();
 	seedDatabase(db);
 
-	console.log('database seeded successfully');
+	console.info('database seeded successfully');
 }
 
 const ask = (question?: string) => {
@@ -51,7 +52,16 @@ const ask = (question?: string) => {
 		process.exit(1);
 	}
 
-	console.log('ask', question);
+	const db = getDb();
+	const episodeTitles = getAllEpisodeTitles(db);
+
+	const episodeTitle = identifyEpisodeTitle(question, episodeTitles);
+	const metricType = identifyMetricType(question);
+
+	console.log('Episode:', episodeTitle);
+	console.log('Metric:', metricType);
+	
+	// TODO: query database for the specific metric
 }
 
 const main = () => {
